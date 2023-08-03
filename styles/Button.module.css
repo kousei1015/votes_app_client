@@ -1,0 +1,10 @@
+.agreeBtn {
+    padding: .3rem .6rem;
+    background-color: red;
+}
+
+.disagreeBtn {
+    padding: .3rem .6rem;
+    background-color: blue;
+}
+

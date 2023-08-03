@@ -1,95 +1,47 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import React from 'react'
+import Link from 'next/link'
+import Button from './../../components/Button'
+import styles from "./../../styles/Post.module.css"
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+export type Post = {
+  id: number;
+  content: string;
+  user_id: number;
+  agree_votes: number;
+  disagree_votes: number;
 }
+
+const fetchData = async() => {
+  const res = await fetch("http://localhost:3001/v1/posts", { cache: "no-store"})
+  const result = await res.json()
+  return result
+}
+
+
+const Page = async () => {
+  const posts: Post[] = await fetchData();
+  return (
+    <div className={styles.wrapper}>
+      <h2>投票アプリ</h2>
+
+      <div className={styles.links}>
+        <Link href="/sign_in">ログインフォームへ</Link>
+        <Link href="/sign_up">新規登録フォームへ</Link>
+        <Link href="/create">新しい質問を投稿</Link>
+      </div>
+
+      <div>
+      {posts.map((post) => {
+        return <article key={post.id} className={styles.post}>
+         <h2>{post.content}</h2>
+         <h3>同意した人の数は現在、{post.agree_votes}人です</h3>
+         <h3>反対した人の数は現在、{post.disagree_votes}人です</h3>
+         <Button post_id={post.id} />
+        </article>
+      })}
+      </div>
+    </div>
+  );
+}
+
+export default Page
