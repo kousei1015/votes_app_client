@@ -17,6 +17,7 @@ const Button = ({
     await axios.post(
       "http://localhost:3001/v1/votes",
       { post_id, vote_type: true },
+      // 以下のheadersの記述はrails側のdevise auth token というgemを使ってユーザーのログイン、識別するために記述
       {
         headers: {
           client: Cookies.get("client"),
@@ -29,7 +30,7 @@ const Button = ({
   };
 
   const notAgreeFunc = async (post_id: number) => {
-    const res = await axios.post(
+    await axios.post(
       "http://localhost:3001/v1/votes",
       { post_id, vote_type: false },
       {
